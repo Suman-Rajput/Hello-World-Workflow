@@ -1,1 +1,35 @@
+name: Hello World Workflow
+
+# Define the triggers for the workflow
+on:
+  push:              # Trigger when code is pushed to the main branch
+    branches:
+      - main
+  pull_request:      # Trigger when a PR targets the main branch
+    branches:
+      - main
+  workflow_dispatch: # Allow manual trigger with optional input
+    inputs:
+      custom_message: # Define a user-provided input
+        description: "Enter a custom message"
+        required: false
+        default: "World"
+
+# Define the job to execute
+jobs:
+  say-hello:
+    runs-on: ubuntu-latest  # Use the latest Ubuntu environment
+
+    steps:
+    - name: Print Hello Message
+      run: |
+        # Check the trigger type and print the appropriate message
+        if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
+          echo "Hello, ${{ github.event.inputs.custom_message }}!"
+        elif [ "${{ github.event_name }}" == "push" ]; then
+          echo "Hello, World! Triggered by a push."
+        elif [ "${{ github.event_name }}" == "pull_request" ]; then
+          echo "Hello, World! Triggered by a pull request."
+        else
+          echo "Hello, World! Unknown event."
 
